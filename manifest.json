@@ -1,0 +1,36 @@
+{
+  "name": "Marauders Map",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Creepily track your friends from FB messages",
+  "homepage_url": "http://arankhanna.com",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": [
+      "src/bg/background.js"
+    ]
+  },
+  "permissions": [
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "cookies",
+    "https://*/*"
+  ],
+  "web_accessible_resources": ["js/mapbox.js.map"],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "content_scripts": [
+    {
+      "matches":[
+        "https://www.facebook.com/*"
+      ],
+      "js":["js/jquery.js", "js/mapbox.js", "js/content.js"],
+      "css":["css/mapbox.css"]
+    }
+  ]
+}
