@@ -1,5 +1,5 @@
-
-
+	
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJEdDJreGxjIn0.Y3-LSV20SRRZOzs_6nSFjA';
 	var user_dict = {};
 	var layer_list = [];
 	var map = null;
@@ -8,19 +8,21 @@
 		var mapDiv = document.createElement('div');
 		mapDiv.id = 'map';
     	$('#pagelet_web_messenger').append(mapDiv);
-    	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJEdDJreGxjIn0.Y3-LSV20SRRZOzs_6nSFjA';
 		// Set scene to default home
 		map = L.mapbox.map('map', 'arankhanna.lnl5mal6')
-		 .setView([42.381982, -71.124694], 12);
+		 .setView([42.381982, -71.124694], 3);
 
 		for(var key in user_dict){
 			user_dict[key]["last_layer"].addTo(map);
 		}
 	});
 	
+
+	// Getting FB images doesn't work with ghostery or other tracker blockers
 	function addLayer(data){
 		var date =  new Date(data.time);
-		var layer = L.mapbox.featureLayer({
+		var layer = L.mapbox.featureLayer();
+		var geoJSON = {
 		    type: 'Feature',
 		    geometry: {
 		        type: 'Point',
@@ -35,13 +37,21 @@
 		        description: 'Recorded at: '+date.toGMTString(),
 		        icon: {
 		        	className: "dot",
-		        	iconUrl: "https://graph.facebook.com/1757391814/picture?type=square",
+		        	iconUrl: "https://graph.facebook.com/"+data.user+"/picture?type=square",
 		        	iconSize: [20, 20],
 		        	iconAnchor: [10,10],
 		        	popupAnchor:[0,-10]
 		        }
 		    }
+		}
+
+		layer.on('layeradd', function(e) {
+		    var marker = e.layer,
+		        feature = marker.feature;
+		    marker.setIcon(L.icon(feature.properties.icon));
 		});
+
+		layer.setGeoJSON(geoJSON);
 
 		if(user_dict[data.user] == undefined){
 			user_dict[data.user] = {
@@ -79,7 +89,7 @@
 	        complete: function(msg) {
 	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
 	        	var messages = json.payload.actions;
-	        	// console.log(messages);
+	        	console.log(messages);
 	        	for(var i =0; i<messages.length; i++){
 	        		if(messages[i]['coordinates'] != null){
 		        		var data = {
