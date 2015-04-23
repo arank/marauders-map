@@ -16,9 +16,11 @@
 			url: document.URL,
 			complete: function(msg){
 				console.log("Parsing HTML");
+				// console.log(msg.responseText);
 				var regexp = /{"message_id"/g;
 				var match;
 				while ((match = regexp.exec(msg.responseText)) != null) {
+					// console.log("matched");
 					var braceCount=1;
 					var i;
 					for(i=match.index+1; braceCount>0; i++){
@@ -29,7 +31,8 @@
 							braceCount--;
 						}
 					}
-					var cache_message = jQuery.parseJSON(msg.responseText.substring(match.index, i));	
+					var cache_message = jQuery.parseJSON(msg.responseText.substring(match.index, i));
+					// console.log(cache_message);	
 					if(cache_message['coordinates'] != null){
 		        		var data = {
 		        			"latitude": cache_message['coordinates']['latitude'],
@@ -48,7 +51,7 @@
 		// Create map for DOM
 		var mapDiv = document.createElement('div');
 		mapDiv.id = 'map';
-    	// $('#pagelet_web_messenger').append(mapDiv);
+    	// $('#u_0_2g').append(mapDiv);
     	$('#contentCol').append(mapDiv);
 
     	// Create icon container
@@ -276,7 +279,9 @@
 	        		}
 	        	}
 	        	updateOpacities();
+	        	sendResponse();
 	        }
 		});
+	  	return true;
 	  }
 	);

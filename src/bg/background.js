@@ -18,8 +18,10 @@ chrome.webRequest.onBeforeRequest.addListener(
         }
         console.log(bodyText);
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        	console.log("passing request body to content script");
-		  	chrome.tabs.sendMessage(tabs[0].id, {bodyText: bodyText}, function(response){});
+            console.log("passing request body to content script");
+            chrome.tabs.sendMessage(details.tabId, {bodyText: bodyText}, function(response){
+                console.log("script executed");
+            });
 		});
     },
     {urls: ["https://www.facebook.com/ajax/mercury/thread_info.php"]},
