@@ -10,6 +10,41 @@
 	var polyline = null;
 
 	$( document ).ready(function() {
+		// Pull cached big-piped data (not async loaded and most recent)
+		$.ajax({
+			type: "GET",
+			url: document.URL,
+			complete: function(msg){
+				console.log("Parsing HTML");
+				var regexp = /{"message_id"/g;
+				var match;
+				while ((match = regexp.exec(msg.responseText)) != null) {
+					var braceCount=1;
+					var i;
+					for(i=match.index+1; braceCount>0; i++){
+						if(msg.responseText[i]=='{'){
+							braceCount++;
+						}
+						else if(msg.responseText[i]=='}'){
+							braceCount--;
+						}
+					}
+					var cache_message = jQuery.parseJSON(msg.responseText.substring(match.index, i));	
+					if(cache_message['coordinates'] != null){
+		        		var data = {
+		        			"latitude": cache_message['coordinates']['latitude'],
+		        			"longitude": cache_message['coordinates']['longitude'],
+		        			"time": cache_message['timestamp'],
+		        			"user": cache_message['author'].split(':')[1]
+		        		}
+	        			console.log(data);
+	        			addLayer(data);
+	        		}
+				}
+				updateOpacities();
+			}
+		});
+
 		// Create map for DOM
 		var mapDiv = document.createElement('div');
 		mapDiv.id = 'map';
@@ -104,6 +139,7 @@
 
 	// Getting FB images doesn't work with ghostery or other tracker blockers
 	function addLayer(data){
+		// Get the user's data from FB (also ensures existence of picture)
 		$.ajax({
 			type:"GET",
 			url: "https://graph.facebook.com/"+data.user,
@@ -113,7 +149,6 @@
 				// Create data point layer
 				var date =  new Date(data.time);
 				var layer = L.mapbox.featureLayer();
-				// TODO use FB api to pull name
 				var geoJSON = {
 				    type: 'Feature',
 				    geometry: {
@@ -186,7 +221,6 @@
 					// Add to map if not zoomed on user
 					if(map != null && focus_user==null){
 						layer.addTo(map);
-						updateOpacities();
 					}
 				}else{
 					// Add recorded point to user object
@@ -209,7 +243,6 @@
 						// Add to map if not zoomed on user
 						if(map != null && focus_user==null){
 							layer.addTo(map);
-							updateOpacities();
 						}
 					}
 				}
@@ -229,7 +262,7 @@
 	        complete: function(msg) {
 	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
 	        	var messages = json.payload.actions;
-	        	console.log(messages);
+	        	// console.log(messages);
 	        	for(var i =0; i<messages.length; i++){
 	        		if(messages[i]['coordinates'] != null){
 		        		var data = {
@@ -242,6 +275,7 @@
 	        			addLayer(data);
 	        		}
 	        	}
+	        	updateOpacities();
 	        }
 		});
 	  }

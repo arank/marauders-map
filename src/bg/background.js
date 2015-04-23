@@ -25,13 +25,3 @@ chrome.webRequest.onBeforeRequest.addListener(
     {urls: ["https://www.facebook.com/ajax/mercury/thread_info.php"]},
     ['requestBody']
 );
-
-// chrome.webRequest.onBeforeSendHeaders.addListener(
-//     function(details)
-//     {
-//         console.log(details);
-//         getMessageJson(null, details.requestHeaders);
-//     },
-//     {urls: ["https://www.facebook.com/ajax/mercury/thread_info.php"]},
-//     ['requestHeaders']
-// );
