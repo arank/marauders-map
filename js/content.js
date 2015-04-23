@@ -9,6 +9,37 @@
 	// Lines between points drawn
 	var polyline = null;
 
+	chrome.runtime.onMessage.addListener(
+	  function(request, sender, sendResponse) {
+    	console.log("requesting");
+    	$.ajax({
+	        type:"POST",
+	        url: "https://www.facebook.com/ajax/mercury/thread_info.php",
+	        data: request.bodyText,
+	        processData: false,
+	        complete: function(msg) {
+	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
+	        	var messages = json.payload.actions;
+	        	console.log(messages);
+	        	for(var i =0; i<messages.length; i++){
+	        		if(messages[i]['coordinates'] != null){
+		        		var data = {
+		        			"latitude": messages[i]['coordinates']['latitude'],
+		        			"longitude": messages[i]['coordinates']['longitude'],
+		        			"time": messages[i]['timestamp'],
+		        			"user": messages[i]['author'].split(':')[1]
+		        		}
+	        			console.log(data);
+	        			addLayer(data);
+	        		}
+	        	}
+	        	updateOpacities();
+	        	sendResponse();
+	        }
+		});
+	  }
+	);
+
 	$( document ).ready(function() {
 		// Pull cached big-piped data (not async loaded and most recent)
 		$.ajax({
@@ -254,34 +285,3 @@
 	}
 
 
-	chrome.runtime.onMessage.addListener(
-	  function(request, sender, sendResponse) {
-    	console.log("requesting");
-    	$.ajax({
-	        type:"POST",
-	        url: "https://www.facebook.com/ajax/mercury/thread_info.php",
-	        data: request.bodyText,
-	        processData: false,
-	        complete: function(msg) {
-	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
-	        	var messages = json.payload.actions;
-	        	// console.log(messages);
-	        	for(var i =0; i<messages.length; i++){
-	        		if(messages[i]['coordinates'] != null){
-		        		var data = {
-		        			"latitude": messages[i]['coordinates']['latitude'],
-		        			"longitude": messages[i]['coordinates']['longitude'],
-		        			"time": messages[i]['timestamp'],
-		        			"user": messages[i]['author'].split(':')[1]
-		        		}
-	        			console.log(data);
-	        			addLayer(data);
-	        		}
-	        	}
-	        	updateOpacities();
-	        	sendResponse();
-	        }
-		});
-	  	return true;
-	  }
-	);

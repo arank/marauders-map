@@ -2,7 +2,9 @@
 
 console.log("Started...");
 
-var ignored_req = []
+var ignored_req = [];
+
+
 chrome.webRequest.onBeforeRequest.addListener(
     function(details)
     {
@@ -17,12 +19,15 @@ chrome.webRequest.onBeforeRequest.addListener(
         	ignored_req=[];
         }
         console.log(bodyText);
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            console.log("passing request body to content script");
-            chrome.tabs.sendMessage(details.tabId, {bodyText: bodyText}, function(response){
-                console.log("script executed");
+        // Add timeout to allow content script to load
+        setTimeout(function(){
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                console.log("passing request body to content script");
+                chrome.tabs.sendMessage(details.tabId, {bodyText: bodyText}, function(response){
+                    console.log("script executed");
+                });
             });
-		});
+        }, 7000);
     },
     {urls: ["https://www.facebook.com/ajax/mercury/thread_info.php"]},
     ['requestBody']
