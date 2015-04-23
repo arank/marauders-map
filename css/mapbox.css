@@ -8,3 +8,36 @@
     position: absolute;
     z-index: 10;
 }
+.dot{
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+}
+#button-container {
+    background:rgb(0,0,0,0);
+    position:absolute;
+    margin-top: 25px;
+    margin-left: 80%;
+    z-index:1;
+}
+#button-container a{
+	position:absolute;
+	z-index: 11;
+	font-size:20px;
+    background:#3B5998;
+    color: #FFF;
+    float: right;
+    display:inline;
+    margin:5px;
+    padding:0;
+    padding:10px;
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,0,0,0.25);
+}
+
+#button-container a:hover{
+	 color:#3B5998;
+	 background: #FFF;
+}
