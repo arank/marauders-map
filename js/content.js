@@ -4,6 +4,11 @@
 
 	// List of FB users and their most recent points
 	var user_dict = {};
+	// List of names of users loaded (for lookahead search) with corresponding list of ids
+	var user_list = ['Most Recent'];
+	var id_list = [0];
+	var most_recent_time = 0;
+	// Counters for users and coordinates loaded
 	var users_loaded = 0;
 	var coords_loaded = 0;
 	// User to focus in on
@@ -87,11 +92,20 @@
 			}
 		});
 
+		// TODO add bottom tab to pop out map
+		var mapTab = document.createElement('div');
+		mapTab.id = 'map-tab';
+		$('body').append(mapTab);
+		$('#map-tab').text('Marauders Map');
+
+		// TODO add search bar instead of info to map
+
+		// TODO add bootbox tutorial on load CustomDialog
+
 		// Create map for DOM
 		var mapDiv = document.createElement('div');
 		mapDiv.id = 'map';
-    	// $('#u_0_2g').append(mapDiv);
-    	$('#contentCol').append(mapDiv);
+    	$('#map-tab').append(mapDiv);
 
     	// Create icon container
     	var containerDiv = document.createElement('div');
@@ -110,6 +124,10 @@
 		counterDiv.id = 'counter';
 		$('#button-container').append(counterDiv);
 		$('#counter').text('Users: 0, Points: 0');
+
+		// $('#map-tab').on("click", function(){
+
+		// });
 
 		$('#back-button').on("click", function(){
 			if(focus_user != null){
@@ -188,6 +206,28 @@
 		$('#counter').text('Users: '+users_loaded+', Points: '+coords_loaded);
 	}
 
+	function focusUser(userId){
+		focus_user =  userId;
+		$('#back-button').text('Back');
+
+		for(var key in user_dict){
+			map.removeLayer(user_dict[key]["last_layer"]);
+		}
+
+		var line = [];
+		var polyline_options = {
+			color: '#3B5998'
+		};
+		var sorted = user_dict[userId]["layers"].sort(function(a,b){return a['time'] - b['time']});
+		for(var i=0; i<sorted.length; i++){
+			user_dict[userId]["layers"][i]["layer"].addTo(map);
+			line.push(user_dict[userId]["layers"][i]["latlng"]);
+		}
+		polyline = L.polyline(line, polyline_options).addTo(map);
+
+		updateOpacities();
+	}
+
 
 	// Getting FB images doesn't work with ghostery or other tracker blockers
 	function addLayer(data){
@@ -197,7 +237,8 @@
 			url: "https://graph.facebook.com/"+data.user,
 			complete: function(msg){
 				var userInfo = jQuery.parseJSON(msg.responseText);
-
+				user_list.push(userInfo["first_name"] +" "+ userInfo["last_name"]);
+				id_list.push(data.user);
 				// Create data point layer
 				var date =  new Date(data.time);
 				var layer = L.mapbox.featureLayer();
@@ -232,25 +273,7 @@
 
 				layer.on('click', function(e){
 					if(focus_user == null){
-						focus_user =  data.user;
-						$('#back-button').text('Back');
-
-						for(var key in user_dict){
-							map.removeLayer(user_dict[key]["last_layer"]);
-						}
-
-						var line = [];
-						var polyline_options = {
-							color: '#3B5998'
-						};
-						var sorted = user_dict[data.user]["layers"].sort(function(a,b){return a['time'] - b['time']});
-						for(var i=0; i<sorted.length; i++){
-							user_dict[data.user]["layers"][i]["layer"].addTo(map);
-							line.push(user_dict[data.user]["layers"][i]["latlng"]);
-						}
-						polyline = L.polyline(line, polyline_options).addTo(map);
-
-						updateOpacities();
+						focusUser(data.user);
 					}
 				});
 
