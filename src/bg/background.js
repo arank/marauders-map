@@ -4,7 +4,7 @@ console.log("Started...");
 
 var ignored_req = [];
 
-
+var cc=0;
 chrome.webRequest.onBeforeRequest.addListener(
     function(details)
     {
@@ -19,15 +19,17 @@ chrome.webRequest.onBeforeRequest.addListener(
         	ignored_req=[];
         }
         console.log(bodyText);
-        // Add timeout to allow content script to load
+        // Add timeout to allow content script to load also possible race condition between concurrent requests
+        // added randomness to probabalistically compensate (dont wanna build a full locking infrastructure).
         setTimeout(function(){
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                console.log("passing request body to content script");
+                cc++;
+                console.log("passing request body to content script "+cc);
                 chrome.tabs.sendMessage(details.tabId, {bodyText: bodyText}, function(response){
                     console.log("script executed");
                 });
             });
-        }, 7000);
+        }, Math.random()*10000);
     },
     {urls: ["https://www.facebook.com/ajax/mercury/thread_info.php"]},
     ['requestBody']

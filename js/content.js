@@ -9,9 +9,11 @@
 	// Lines between points drawn
 	var polyline = null;
 
+	var cc = 0;
 	chrome.runtime.onMessage.addListener(
 	  function(request, sender, sendResponse) {
-    	console.log("requesting");
+	  	cc++;
+    	console.log("requesting "+cc);
     	$.ajax({
 	        type:"POST",
 	        url: "https://www.facebook.com/ajax/mercury/thread_info.php",
@@ -20,20 +22,24 @@
 	        complete: function(msg) {
 	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
 	        	var messages = json.payload.actions;
-	        	console.log(messages);
-	        	for(var i =0; i<messages.length; i++){
-	        		if(messages[i]['coordinates'] != null){
-		        		var data = {
-		        			"latitude": messages[i]['coordinates']['latitude'],
-		        			"longitude": messages[i]['coordinates']['longitude'],
-		        			"time": messages[i]['timestamp'],
-		        			"user": messages[i]['author'].split(':')[1]
+	        	if(messages != undefined){
+	        		console.log(messages);
+		        	for(var i =0; i<messages.length; i++){
+		        		if(messages[i]['coordinates'] != null){
+			        		var data = {
+			        			"latitude": messages[i]['coordinates']['latitude'],
+			        			"longitude": messages[i]['coordinates']['longitude'],
+			        			"time": messages[i]['timestamp'],
+			        			"user": messages[i]['author'].split(':')[1]
+			        		}
+		        			console.log(data);
+		        			addLayer(data);
 		        		}
-	        			console.log(data);
-	        			addLayer(data);
-	        		}
-	        	}
-	        	updateOpacities();
+		        	}
+		        	updateOpacities();
+		        }else{
+		        	console.log(msg.responseText);
+		        }
 	        	sendResponse();
 	        }
 		});
