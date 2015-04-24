@@ -4,6 +4,8 @@
 
 	// List of FB users and their most recent points
 	var user_dict = {};
+	var users_loaded = 0;
+	var coords_loaded = 0;
 	// User to focus in on
 	var focus_user = null;
 	// Lines between points drawn
@@ -96,12 +98,18 @@
 		containerDiv.id = 'button-container';
 		$('#map').append(containerDiv);
 
-    	// Create icon to change layers
+    	// Create button to change layers
 		var backButton = document.createElement('a');
         backButton.href = '#';
         backButton.id = 'back-button';
         backButton.innerHTML = "Info";
         $('#button-container').append(backButton);
+
+        // Create counter
+		var counterDiv = document.createElement('div');
+		counterDiv.id = 'counter';
+		$('#button-container').append(counterDiv);
+		$('#counter').text('Users: 0, Points: 0');
 
 		$('#back-button').on("click", function(){
 			if(focus_user != null){
@@ -176,6 +184,10 @@
 		}
 	}
 
+	function updateCounters(){
+		$('#counter').text('Users: '+users_loaded+', Points: '+coords_loaded);
+	}
+
 
 	// Getting FB images doesn't work with ghostery or other tracker blockers
 	function addLayer(data){
@@ -245,7 +257,9 @@
 				layer.setGeoJSON(geoJSON);
 
 				// If user hasn't been recorded set this as their most recent point
+				coords_loaded++;
 				if(user_dict[data.user] == undefined){
+					users_loaded++;
 					user_dict[data.user] = {
 						last_time: data.time,
 						last_layer: layer,
@@ -286,6 +300,7 @@
 						}
 					}
 				}
+				updateCounters();
 			}
 		});
 	}
