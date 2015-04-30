@@ -44,8 +44,9 @@
 		        		}
 		        	}
 		        	updateOpacities();
+		        	updateTypeahead();
 		        }else{
-		        	console.log(msg.responseText);
+		        	console.log("No messages returned: "+msg.responseText);
 		        }
 	        	sendResponse();
 	        }
@@ -89,6 +90,7 @@
 	        		}
 				}
 				updateOpacities();
+				updateTypeahead();
 			}
 		});
 
@@ -112,11 +114,21 @@
 		containerDiv.id = 'button-container';
 		$('#map').append(containerDiv);
 
+		// Create search bar
+		var searchDiv = document.createElement('div');
+		searchDiv.id ="search-holder";
+		$('#button-container').append(searchDiv);
+		var searchBar =  document.createElement('input');
+		searchBar.setAttribute("class", "typeahead");
+		searchBar.setAttribute("type", "text");
+		searchBar.setAttribute("placeholder", "Search Friends");
+		$('#search-holder').append(searchBar);		
+
     	// Create button to change layers
 		var backButton = document.createElement('a');
         backButton.href = '#';
         backButton.id = 'back-button';
-        backButton.innerHTML = "Info";
+        backButton.innerHTML = "Back";
         $('#button-container').append(backButton);
 
         // Create counter
@@ -129,8 +141,28 @@
 
 		// });
 
+		$('.typeahead').bind("enterKey",function(e){
+		   if(map != null && focus_user==null){
+				var name = $(this).val();
+				var index = user_list.indexOf(name);
+				if(index != -1){
+					var latlng = user_dict[id_list[index]]["last_latlng"];
+					map.setView([latlng.lat, latlng.lng], 20);
+				}
+			}
+		});
+		$('.typeahead').keyup(function(e){
+		    if(e.keyCode == 13)
+		    {
+		        $(this).trigger("enterKey");
+		    }
+		});
+
 		$('#back-button').on("click", function(){
 			if(focus_user != null){
+				// Layout changes
+				$('#search-holder').css("display", "inline");
+				$('#back-button').css("display", "none");
 
 				// Remove zoomed layers
 				map.removeLayer(polyline);
@@ -139,7 +171,6 @@
 					map.removeLayer(user_dict[focus_user]["layers"][i]["layer"]);	
 				}
 				focus_user = null;
-				$(this).text('Info');
 
 				// Set to default layer (no-zoom)
 				for(var key in user_dict){
@@ -206,9 +237,49 @@
 		$('#counter').text('Users: '+users_loaded+', Points: '+coords_loaded);
 	}
 
+	function updateTypeahead(){
+		var substringMatcher = function(strs) {
+		  return function findMatches(q, cb) {
+		    var matches, substringRegex;
+		 
+		    // an array that will be populated with substring matches
+		    matches = [];
+		 
+		    // regex used to determine if a string contains the substring `q`
+		    substrRegex = new RegExp(q, 'i');
+		 
+		    // iterate through the pool of strings and for any string that
+		    // contains the substring `q`, add it to the `matches` array
+		    $.each(strs, function(i, str) {
+		      if (substrRegex.test(str)) {
+		        matches.push(str);
+		      }
+		    });
+		 
+		    cb(matches);
+		  };
+		};
+
+		var searchBox = $('#search-holder .typeahead');
+		searchBox.typeahead('destroy');
+		searchBox.typeahead({
+		  hint: true,
+		  highlight: true,
+		  minLength: 1
+		},
+		{
+		  name: 'states',
+		  source: substringMatcher(user_list)
+		});
+	}
+
 	function focusUser(userId){
 		focus_user =  userId;
-		$('#back-button').text('Back');
+
+		// Layout changes
+		$('#search-holder').css("display", "none");
+		$('#back-button').css("display", "inline");
+
 
 		for(var key in user_dict){
 			map.removeLayer(user_dict[key]["last_layer"]);
@@ -237,8 +308,15 @@
 			url: "https://graph.facebook.com/"+data.user,
 			complete: function(msg){
 				var userInfo = jQuery.parseJSON(msg.responseText);
-				user_list.push(userInfo["first_name"] +" "+ userInfo["last_name"]);
-				id_list.push(data.user);
+				var name = userInfo["first_name"] +" "+ userInfo["last_name"];
+				if(user_list.indexOf(name) == -1){
+					user_list.push(name);
+					id_list.push(data.user);
+				}
+				if(data.time > most_recent_time){
+					most_recent_time = data.time;
+					id_list[0] =  data.user;
+				}
 				// Create data point layer
 				var date =  new Date(data.time);
 				var layer = L.mapbox.featureLayer();
@@ -253,7 +331,7 @@
 				        ]
 				    },
 				    properties: {
-				        title: userInfo["first_name"] +" "+ userInfo["last_name"],
+				        title: name,
 				        description: 'Recorded at: '+date.toGMTString(),
 				        icon: {
 				        	className: "dot "+data.user+"-"+data.time,
@@ -286,6 +364,10 @@
 					user_dict[data.user] = {
 						last_time: data.time,
 						last_layer: layer,
+						last_latlng: {
+							lat: data.latitude,
+							lng: data.longitude
+						},
 						layers: [{
 							layer: layer,
 							time: data.time,
@@ -315,6 +397,11 @@
 						if(map != null && focus_user==null){
 							map.removeLayer(user_dict[data.user]["last_layer"]);
 						}
+						user_dict[data.user]["last_latlng"] = 
+						{
+							lat: data.latitude,
+							lng: data.longitude
+						};
 						user_dict[data.user]["last_time"] = data.time;
 						user_dict[data.user]["last_layer"] = layer;
 						// Add to map if not zoomed on user

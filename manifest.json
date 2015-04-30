@@ -27,9 +27,9 @@
   "content_scripts": [
     {
       "matches":[
-        "https://www.facebook.com/*"
+        "https://www.facebook.com/messages/*"
       ],
-      "js":["js/jquery.js", "js/mapbox.js", "js/content.js"],
+      "js":["js/jquery.js", "js/mapbox.js", "js/content.js", "js/typeahead.js"],
       "css":["css/mapbox.css"]
     }
   ]
