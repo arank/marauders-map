@@ -94,15 +94,14 @@
 			}
 		});
 
+		// TODO add bootbox tutorial on load CustomDialog
+
 		// TODO add bottom tab to pop out map
 		var mapTab = document.createElement('div');
 		mapTab.id = 'map-tab';
 		$('body').append(mapTab);
-		$('#map-tab').text('Marauders Map');
-
-		// TODO add search bar instead of info to map
-
-		// TODO add bootbox tutorial on load CustomDialog
+		$('#map-tab').addClass("map-label");
+		$('#map-tab').text('Marauders Map');	
 
 		// Create map for DOM
 		var mapDiv = document.createElement('div');
@@ -135,11 +134,21 @@
 		var counterDiv = document.createElement('div');
 		counterDiv.id = 'counter';
 		$('#button-container').append(counterDiv);
-		$('#counter').text('Users: 0, Points: 0');
+		$('#counter').text('Users: 0 Points: 0');
 
-		// $('#map-tab').on("click", function(){
-
-		// });
+		// Set up click hierarchy for map tab and add expand retract functionality
+	    $("#map-tab div").click(function(e) {
+	        e.stopPropagation();
+	   	});
+		$('#map-tab').on("click", function(){
+			if($(this).hasClass("map-expand")){
+				$(this).removeClass("map-expand").addClass("map-label");
+				$('#map').css("visibility", "visible");
+			}else{
+				$(this).removeClass("map-label").addClass("map-expand");
+				$('#map').css("visibility", "hidden");
+			}
+		});
 
 		$('.typeahead').bind("enterKey",function(e){
 		   if(map != null && focus_user==null){
@@ -163,6 +172,7 @@
 				// Layout changes
 				$('#search-holder').css("display", "inline");
 				$('#back-button').css("display", "none");
+				$('#counter').css("display", "inline");
 
 				// Remove zoomed layers
 				map.removeLayer(polyline);
@@ -186,6 +196,7 @@
 		// Set scene to default home
 		map = L.mapbox.map('map', 'arankhanna.lnl5mal6')
 		 .setView([42.381982, -71.124694], 3);
+		// $('#map-tab').addClass("map-label");
 
 		// Set to default layer (no-zoom)
 		for(var key in user_dict){
@@ -234,7 +245,7 @@
 	}
 
 	function updateCounters(){
-		$('#counter').text('Users: '+users_loaded+', Points: '+coords_loaded);
+		$('#counter').text('Users: '+users_loaded+' Points: '+coords_loaded);
 	}
 
 	function updateTypeahead(){
@@ -279,6 +290,7 @@
 		// Layout changes
 		$('#search-holder').css("display", "none");
 		$('#back-button').css("display", "inline");
+		$('#counter').css("display", "none");
 
 
 		for(var key in user_dict){

@@ -4,6 +4,7 @@
     width:100%;
     height: 420px;
     margin-top: 10px;
+    left: 0px;
     position: absolute;
     z-index: 10;
 }
@@ -14,12 +15,32 @@
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 }
-#map-tab{
+.map-expand{
+    white-space: nowrap;
+    overflow: hidden;
+	position:absolute;
+	text-align: center;     
+	bottom:0; 
+	width:85px;   
+	height:8px;
+	background:#F9F9FA;
+	padding: 10px;
+	font-weight: bold;
+	border: 1px solid rgba(29, 49, 91, .3);
+}
+.map-label{
+	height: 435px;
+	color: #FFF;
+	background: #6d84b4;
 	position:absolute;    
-	bottom:0;    
+	bottom:0;
+	text-align: center;    
 	width:30%;    
-	height:20px;
-	background:#3B5998;
+	padding: 10px;
+	font-weight: bold;
+}
+.map-label:hover{
+	background: #3B5998; 
 }
 #button-container {
     background:rgb(0,0,0,0);
@@ -35,6 +56,7 @@
     background:#3B5998;
     color: #FFF;
     float: right;
+    margin-left: 20px;
     display: none;
     padding:10px;
     text-decoration:none;
