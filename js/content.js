@@ -54,6 +54,14 @@
 	  }
 	);
 
+	// function messagesRestRequest(requestBody){
+
+	// }
+
+	// function messagesPipeParse(pipeBody){
+
+	// }
+
 	$( document ).ready(function() {
 		// Pull cached big-piped data (not async loaded and most recent)
 		$.ajax({

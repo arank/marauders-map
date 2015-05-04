@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Marauders Map - Keeping an eye on your friends...</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/scrolling-nav.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<!-- The #page-top ID is part of the scrolling feature - the data-spy and data-target are part of the built-in Bootstrap scrollspy function -->
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top">The Map</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                    <li class="hidden">
+                        <a class="page-scroll" href="#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#about">Finding the Map</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">Using the Map</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">About the Project</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <!-- Intro Section -->
+    <section id="intro" class="intro-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>The Marauders Map</h1>
+                </div>
+                <p>This extension gives you access to a magical map that can track the recent as well as past locations of your facebook acquaintences with up to a meter of accuracy. Read about <a class="page-scroll" href="#about">finding</a> and <a class="page-scroll" href="#services">using</a> the map here or go ahead and <a href="https://www.facebook.com/messages/">open it</a> if you swear you are up to no good...</p>
+                <img class="small-img" src="../icons/map.gif">
+                <p class="subscript">This was written in conjuction with <a>this blog post</a> to demonstrate how Facebook messenger sending users' location by default allows you to roughly track people you chat with.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>How Do I Find The Map?</h1>
+                </div>
+                <p>To access the map you must be logged into Facebook (with this extension enabled). You must then go to <a href="https://www.facebook.com/messages/">https://www.facebook.com/messages/</a> and the map tab should pop up in the bottom left of the screen.</p><img src="../icons/tutorial1.png"><p>To close the map click the blue bar above the map and it will minimize to a tab in the bottom left which can be clicked to re-open the map.</p><img src="../icons/tutorial2.png">
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>How Do I Use The Map?</h1>
+                </div>
+                <p> To pull the most recent location data of a Facebook user onto the map you have to be on <a href="https://www.facebook.com/messages/">https://www.facebook.com/messages/</a> and click on any conversation (indavidual or group) in the list on the left with that user in it.</p><img src="../icons/tutorial3.png"><p>Any message sent from that user with a location attached is added to the map.</p><img class="small-img" src="../icons/tutorial5.png"><p>Bubbles on the map represent the most recent location for each user, and clicking on a user's bubble brings up all past location points recorded for that user.</p><img class="small-img" src="../icons/tutorial6.png"><p>To pull more past location data of a Facebook user onto the map scroll up in any conversation with that user in it.</p><img src="../icons/tutorial4.png"><p>Caution: When you reload the webpage with the map, all the data gathered on the map is erased (<a class="page-scroll" href="#contact">Why?</a>).</p> 
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Why Make This?</h1>
+                </div>
+                <p>This extension was developed as a demonstration not an actual tool to creep on your Facebook acquaintences. Hence it is not super polished nor optimized to gather/store large amounts of data on acquaintences (even though you can image using it to do so). This map is really meant to highlight... Read <a>this Medium post</a> for more a detailed discussion about what motivated the creation of this extension.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>
+
+    <!-- Scrolling Nav JavaScript -->
+    <script src="../js/jquery.easing.min.js"></script>
+    <script src="../js/scrolling-nav.js"></script>
+
+</body>
+
+</html>
