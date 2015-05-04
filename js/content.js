@@ -1,30 +1,67 @@
+//Created by Aran Khanna All Rights Reserved
 	
-	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJEdDJreGxjIn0.Y3-LSV20SRRZOzs_6nSFjA';
-	var map = null;
+// Global Variables
 
-	// List of FB users and their most recent points
+// Map Variables
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJEdDJreGxjIn0.Y3-LSV20SRRZOzs_6nSFjA';
+	var map_id = "arankhanna.m3ankjj3";
+	// Map object
+	var map = null;
+	// Lines between points drawn on map
+	var polyline = null;
+
+// Facebooks message data endpoint
+var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
+
+// User Data Structures
+	// Dictionary of FB users and their location data
 	var user_dict = {};
-	// List of names of users loaded (for lookahead search) with corresponding list of ids
+	// List of names of users loaded (for lookahead search) with corresponding list of FB ids
 	var user_list = ['Most Recent'];
 	var id_list = [0];
+
+// User Data Variables
+	// The most recent data point over all users
 	var most_recent_time = 0;
-	// Counters for users and coordinates loaded
+	// Counters for the number of users and data points loaded
 	var users_loaded = 0;
 	var coords_loaded = 0;
 	// User to focus in on
 	var focus_user = null;
-	// Lines between points drawn
-	var polyline = null;
-
-	var cc = 0;
+	// Counter for total number of async rest calls made
+	var async_reqs = 0;
+	
+	// On every request from the background script get the rest messages
 	chrome.runtime.onMessage.addListener(
-	  function(request, sender, sendResponse) {
-	  	cc++;
-    	console.log("requesting "+cc);
+	  	function(request, sender, sendResponse){
+			getRestMessages(request.bodyText, function(){
+				updateOpacities();
+		        updateTypeahead();
+				sendResponse();
+			});
+	  	}
+	);
+
+	// When the document is pull cached big pipe data out of it and add the map html
+	$( document ).ready(function() {
+		// Pull cached big-piped data (not async loaded and most recent)
+		getPipeMessages(document.URL, function(){
+			updateOpacities();
+			updateTypeahead();
+		});
+
+		// Set up map
+		setupMap(document);
+		setupMapControls(document);
+	});
+
+	function getRestMessages(requestBody, callback){
+		async_reqs++;
+    	console.log("requesting "+async_reqs);
     	$.ajax({
 	        type:"POST",
-	        url: "https://www.facebook.com/ajax/mercury/thread_info.php",
-	        data: request.bodyText,
+	        url: endpoint_url,
+	        data: requestBody,
 	        processData: false,
 	        complete: function(msg) {
 	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
@@ -43,33 +80,20 @@
 		        			addLayer(data);
 		        		}
 		        	}
-		        	updateOpacities();
-		        	updateTypeahead();
 		        }else{
 		        	console.log("No messages returned: "+msg.responseText);
 		        }
-	        	sendResponse();
+	        	callback();
 	        }
 		});
-	  }
-	);
+	}
 
-	// function messagesRestRequest(requestBody){
-
-	// }
-
-	// function messagesPipeParse(pipeBody){
-
-	// }
-
-	$( document ).ready(function() {
-		// Pull cached big-piped data (not async loaded and most recent)
+	function getPipeMessages(url, callback){
+		console.log("parsing HTML");
 		$.ajax({
 			type: "GET",
-			url: document.URL,
+			url: url,
 			complete: function(msg){
-				console.log("Parsing HTML");
-				// console.log(msg.responseText);
 				var regexp = /{"message_id"/g;
 				var match;
 				while ((match = regexp.exec(msg.responseText)) != null) {
@@ -93,18 +117,17 @@
 		        			"time": cache_message['timestamp'],
 		        			"user": cache_message['author'].split(':')[1]
 		        		}
-	        			console.log(data);
-	        			addLayer(data);
-	        		}
+		    			console.log(data);
+		    			addLayer(data);
+		    		}
 				}
-				updateOpacities();
-				updateTypeahead();
+				callback();
 			}
 		});
+	}
 
-		// TODO add bootbox tutorial on load CustomDialog
-
-		// TODO add bottom tab to pop out map
+	function setupMap(document){
+		// Create tab for map
 		var mapTab = document.createElement('div');
 		mapTab.id = 'map-tab';
 		$('body').append(mapTab);
@@ -116,7 +139,33 @@
 		mapDiv.id = 'map';
     	$('#map-tab').append(mapDiv);
 
-    	// Create icon container
+    	// Set up click hierarchy for map tab and add expand retract functionality
+	    $("#map-tab div").click(function(e) {
+	        e.stopPropagation();
+	   	});
+		$('#map-tab').on("click", function(){
+			if($(this).hasClass("map-expand")){
+				$(this).removeClass("map-expand").addClass("map-label");
+				$('#map').css("visibility", "visible");
+			}else{
+				$(this).removeClass("map-label").addClass("map-expand");
+				$('#map').css("visibility", "hidden");
+			}
+		});
+
+		// Set scene to default home
+		map = L.mapbox.map('map', map_id)
+		 .setView([42.381982, -71.124694], 3);
+
+		// Set to default layer (no user zoom)
+		for(var key in user_dict){
+			user_dict[key]["last_layer"].addTo(map);
+		}
+		updateOpacities();
+	}
+
+	function setupMapControls(document){
+		// Create icon container
     	var containerDiv = document.createElement('div');
 		containerDiv.id = 'button-container';
 		$('#map').append(containerDiv);
@@ -138,26 +187,14 @@
         backButton.innerHTML = "Back";
         $('#button-container').append(backButton);
 
-        // Create counter
+        // Create counter and update it to most recent
 		var counterDiv = document.createElement('div');
 		counterDiv.id = 'counter';
 		$('#button-container').append(counterDiv);
 		$('#counter').text('Users: 0 Points: 0');
+		updateCounters();
 
-		// Set up click hierarchy for map tab and add expand retract functionality
-	    $("#map-tab div").click(function(e) {
-	        e.stopPropagation();
-	   	});
-		$('#map-tab').on("click", function(){
-			if($(this).hasClass("map-expand")){
-				$(this).removeClass("map-expand").addClass("map-label");
-				$('#map').css("visibility", "visible");
-			}else{
-				$(this).removeClass("map-label").addClass("map-expand");
-				$('#map').css("visibility", "hidden");
-			}
-		});
-
+		// Attach handler to search bar to autocomplete and focus on user
 		$('.typeahead').bind("enterKey",function(e){
 		   if(map != null && focus_user==null){
 				var name = $(this).val();
@@ -175,43 +212,12 @@
 		    }
 		});
 
+		// Attach handler to back button to clear user zoom
 		$('#back-button').on("click", function(){
-			if(focus_user != null){
-				// Layout changes
-				$('#search-holder').css("display", "inline");
-				$('#back-button').css("display", "none");
-				$('#counter').css("display", "inline");
-
-				// Remove zoomed layers
-				map.removeLayer(polyline);
-			 	polyline = null;
-				for(var i=0; i<user_dict[focus_user]["layers"].length; i++){
-					map.removeLayer(user_dict[focus_user]["layers"][i]["layer"]);	
-				}
-				focus_user = null;
-
-				// Set to default layer (no-zoom)
-				for(var key in user_dict){
-					user_dict[key]["last_layer"].addTo(map);
-				}
-				updateOpacities();
-
-			}else{
-				alert("These are the last recorded positions of your friends reported by FB chat. Click any icon to view that user's location history. Fainter pictures denote data recorded further in the past.");
-			}
+			clearUser();
 		});
+	}
 
-		// Set scene to default home
-		map = L.mapbox.map('map', 'arankhanna.lnl5mal6')
-		 .setView([42.381982, -71.124694], 3);
-		// $('#map-tab').addClass("map-label");
-
-		// Set to default layer (no-zoom)
-		for(var key in user_dict){
-			user_dict[key]["last_layer"].addTo(map);
-		}
-		updateOpacities();
-	});
 	
 	function updateOpacities(){
 		var min = Number.MAX_VALUE;
@@ -292,32 +298,59 @@
 		});
 	}
 
-	function focusUser(userId){
-		focus_user =  userId;
+	function clearUser(){
+		if(focus_user != null){
+			// Layout changes
+			$('#search-holder').css("display", "inline");
+			$('#back-button').css("display", "none");
+			$('#counter').css("display", "inline");
 
-		// Layout changes
-		$('#search-holder').css("display", "none");
-		$('#back-button').css("display", "inline");
-		$('#counter').css("display", "none");
+			// Remove zoomed layers
+			map.removeLayer(polyline);
+		 	polyline = null;
+			for(var i=0; i<user_dict[focus_user]["layers"].length; i++){
+				map.removeLayer(user_dict[focus_user]["layers"][i]["layer"]);	
+			}
+			focus_user = null;
 
-
-		for(var key in user_dict){
-			map.removeLayer(user_dict[key]["last_layer"]);
+			// Set to default layer (no-zoom)
+			for(var key in user_dict){
+				user_dict[key]["last_layer"].addTo(map);
+			}
+			updateOpacities();
 		}
-
-		var line = [];
-		var polyline_options = {
-			color: '#3B5998'
-		};
-		var sorted = user_dict[userId]["layers"].sort(function(a,b){return a['time'] - b['time']});
-		for(var i=0; i<sorted.length; i++){
-			user_dict[userId]["layers"][i]["layer"].addTo(map);
-			line.push(user_dict[userId]["layers"][i]["latlng"]);
-		}
-		polyline = L.polyline(line, polyline_options).addTo(map);
-
-		updateOpacities();
 	}
+
+	function focusUser(userId){
+		if(focus_user == null){
+			focus_user =  userId;
+
+			// Layout changes
+			$('#search-holder').css("display", "none");
+			$('#back-button').css("display", "inline");
+			$('#counter').css("display", "none");
+
+
+			for(var key in user_dict){
+				map.removeLayer(user_dict[key]["last_layer"]);
+			}
+
+			var line = [];
+			var polyline_options = {
+				color: '#3B5998'
+			};
+			var sorted = user_dict[userId]["layers"].sort(function(a,b){return a['time'] - b['time']});
+			for(var i=0; i<sorted.length; i++){
+				user_dict[userId]["layers"][i]["layer"].addTo(map);
+				line.push(user_dict[userId]["layers"][i]["latlng"]);
+			}
+			polyline = L.polyline(line, polyline_options).addTo(map);
+
+			updateOpacities();
+		}
+	}
+
+	// 
 
 
 	// Getting FB images doesn't work with ghostery or other tracker blockers
