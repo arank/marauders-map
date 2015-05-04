@@ -35,8 +35,6 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 	chrome.runtime.onMessage.addListener(
 	  	function(request, sender, sendResponse){
 			getRestMessages(request.bodyText, function(){
-				updateOpacities();
-		        updateTypeahead();
 				sendResponse();
 			});
 	  	}
@@ -45,16 +43,15 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 	// When the document is pull cached big pipe data out of it and add the map html
 	$( document ).ready(function() {
 		// Pull cached big-piped data (not async loaded and most recent)
-		getPipeMessages(document.URL, function(){
-			updateOpacities();
-			updateTypeahead();
-		});
+		getPipeMessages(document.URL, function(){});
 
 		// Set up map
 		setupMap(document);
 		setupMapControls(document);
 	});
 
+	// Gets and parses json data on user location from posting to FB messages endpoint
+	// with the requestBody, calling the callback after its done
 	function getRestMessages(requestBody, callback){
 		async_reqs++;
     	console.log("requesting "+async_reqs);
@@ -350,9 +347,6 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 		}
 	}
 
-	// 
-
-
 	// Getting FB images doesn't work with ghostery or other tracker blockers
 	function addLayer(data){
 		// Get the user's data from FB (also ensures existence of picture)
@@ -463,7 +457,13 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 						}
 					}
 				}
-				updateCounters();
+				if(map != null){
+					updateOpacities();
+					if(focus_user==null){
+						updateCounters();
+						updateTypeahead();
+					}
+				}
 			}
 		});
 	}
