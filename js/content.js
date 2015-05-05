@@ -11,7 +11,7 @@
 	var polyline = null;
 
 // Facebooks message data endpoint
-var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
+	var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 
 // User Data Structures
 	// Dictionary of FB users and their location data
@@ -61,7 +61,15 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 	        data: requestBody,
 	        processData: false,
 	        complete: function(msg) {
-	        	var json = jQuery.parseJSON(msg.responseText.split(';')[3]);
+	        	// Convert wierd json format to regular json string
+	        	var cleanedText = ""
+	        	var splitText = msg.responseText.split(';');
+	        	for(var i=3; i<splitText.length; i++){
+	        		var cleanedText = cleanedText+splitText[i];
+	        	}
+
+	        	// Parse json string and extract location info for each message
+	        	var json = jQuery.parseJSON(cleanedText);
 	        	var messages = json.payload.actions;
 	        	if(messages != undefined){
 	        		console.log(messages);
@@ -457,6 +465,8 @@ var endpoint_url = "https://www.facebook.com/ajax/mercury/thread_info.php";
 						}
 					}
 				}
+
+				// Update all relevant counters after this point is added
 				if(map != null){
 					updateOpacities();
 					if(focus_user==null){

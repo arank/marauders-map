@@ -34,7 +34,7 @@ function sendRequest(tabId, bodyText){
                 console.log("script executed");
             });
         });
-    }, Math.random()*10000);
+    }, (Math.random()*5000)+2000);
 }
 
 chrome.webRequest.onBeforeRequest.addListener(
