@@ -29,7 +29,7 @@
       "matches":[
         "https://www.facebook.com/messages/*"
       ],
-      "js":["js/jquery.js", "js/mapbox.js", "js/content.js", "js/typeahead.js"],
+      "js":["js/jquery.js", "js/mapbox.js", "js/typeahead.js", "src/fb/content.js"],
       "css":["css/mapbox.css"]
     }
   ]
