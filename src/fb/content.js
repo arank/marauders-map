@@ -49,6 +49,19 @@
 		// Set up map
 		setupMap(document);
 		setupMapControls(document);
+
+		//Check for URL change (react simply diffs and rerenders page so we want to remove map overlay if the URL changes)
+		var storedHash = document.URL;
+		window.setInterval(function () {
+		    if (document.URL != storedHash) {
+		        storedHash = document.URL;
+		        if(storedHash.indexOf('facebook.com/messages') > -1){
+		        	$('#map-tab').css("display", "inline");
+		        }else{
+		        	$('#map-tab').css("display", "none");
+		        }
+		    }
+		}, 100);
 	});
 
 	// Gets and parses json data on user location from posting to FB messages endpoint
@@ -94,6 +107,8 @@
 		});
 	}
 
+	// Gets and parses and data delivered in the html body via BigPipe
+	// calling the callback after its done adding the data to the map.
 	function getPipeMessages(url, callback) {
 		console.log("parsing HTML");
 		$.ajax({
@@ -132,6 +147,7 @@
 		});
 	}
 
+	// Adds the map div and map to the document, along with interactability
 	function setupMap(document) {
 		// Create tab for map
 		var mapTab = document.createElement('div');
@@ -170,6 +186,8 @@
 		updateAllOpacities();
 	}
 
+	// Adds the control panel for the map to the document, including search bar 
+	// back button and counters
 	function setupMapControls(document) {
 		// Create icon container
     	var containerDiv = document.createElement('div');
@@ -224,6 +242,8 @@
 		});
 	}
 
+	// Updates all the opacities for the coordinates points if we are focused in 
+	// on a specific user's location history
 	function updateFocusOpacity() {
 		var min = Number.MAX_VALUE;
 		var max = 0;
@@ -245,6 +265,7 @@
 		}
 	}
 	
+	// Updates all the opacities for the coordinate points if we are not focused on a user
 	function updateAllOpacities() {
 		var min = Number.MAX_VALUE;
 		var max = 0;
@@ -269,10 +290,12 @@
 		}
 	}
 
+	// Updates counters with most recent counts of users and coordinates loaded
 	function updateCounters() {
 		$('#counter').text('Users: '+users_loaded+' Points: '+coords_loaded);
 	}
 
+	// Updates typeahead for search box with the most recent list of users
 	function updateTypeahead(){
 		var substringMatcher = function(strs) {
 		  return function findMatches(q, cb) {
@@ -296,6 +319,7 @@
 		  };
 		};
 
+		// remove the old search box and add the new one
 		var searchBox = $('#search-holder .typeahead');
 		searchBox.typeahead('destroy');
 		searchBox.typeahead({
@@ -309,6 +333,8 @@
 		});
 	}
 
+	// Un-focus on a user and go back to the default map of most recent positions for
+	// all users
 	function clearUser() {
 		if(focus_user != null){
 			// Layout changes
@@ -332,6 +358,7 @@
 		}
 	}
 
+	// Focus on a specific user and display just their search history on the map
 	function focusUser(userId) {
 		if(focus_user == null){
 			focus_user =  userId;
@@ -361,6 +388,7 @@
 		}
 	}
 
+	// Add the user to list of all users
 	function registerUser(rawUserJson, data) {
 		var userInfo = jQuery.parseJSON(rawUserJson);
 		var name = userInfo["first_name"] +" "+ userInfo["last_name"];
@@ -375,6 +403,7 @@
 		return name;
 	}
 
+	// Creates a new map layer for a user's location
 	function createUserLayer(name, data) {
 		var date =  new Date(data.time);
 		var layer = L.mapbox.featureLayer();
@@ -420,7 +449,7 @@
 		return layer;
 	}
 
-
+	// Adds a layer to the map
 	function addUserLayer(layer, data) {
 		coords_loaded++;
 		if(user_dict[data.user] == undefined){
@@ -476,6 +505,7 @@
 		}
 	}
 
+	// Updates all the map control UI components
 	function updateUI() {
 		if(map != null){
 			updateAllOpacities();
