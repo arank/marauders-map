@@ -7,7 +7,7 @@ Naviagte to the root folder (which contains manifest.json) and select it.
 For a sligtly more detailed walkthrough look here: https://www.mattcutts.com/blog/how-to-install-a-chrome-extension-from-github/
 
 ## Where did this come from?
-This chrome extension was written to accompany my Medium post (which can be viewed here ) about the creepy potential of the 
+This chrome extension was written to accompany my Medium post (which can be viewed here https://medium.com/@arankhanna/9da8820bd27d) about the creepy potential of the 
 loaction data we often inadvertantly reveal about ourselves on Facebook messanger, due to its defaults of always sharing your 
 location when sending messages from the increasingly popular mobile app. 
 
