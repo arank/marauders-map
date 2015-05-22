@@ -1,8 +1,9 @@
 # The Marauders Map
 
 ## How do I install this?
-To run this extension in your browser from source simply download it as a zip file and unzip it somewhere on your computer.
-Go to chrome://extensions, ensure that Developer Mode is enabled and click load unpacked extension. 
+You can get this extension on the Chrome webstore here: https://chrome.google.com/webstore/detail/marauders-map/mliofombcghaamgjkmmmmlepkiacdhkh
+
+To run this extension from source in your browser from source simply download it as a zip file and unzip it somewhere on your computer. Go to chrome://extensions, ensure that Developer Mode is enabled and click load unpacked extension. 
 Naviagte to the root folder (which contains manifest.json) and select it. 
 For a sligtly more detailed walkthrough look here: https://www.mattcutts.com/blog/how-to-install-a-chrome-extension-from-github/
 
