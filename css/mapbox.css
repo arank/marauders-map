@@ -38,6 +38,7 @@
 	width:30%;    
 	padding: 10px;
 	font-weight: bold;
+	z-index:999;
 }
 .map-label:hover{
 	background: #3B5998; 
@@ -45,9 +46,10 @@
 #button-container {
     background:rgb(0,0,0,0);
     position:absolute;
-    margin-top: 25px;
-    margin-left: 70%;
     z-index:1;
+    width:150px;
+	right:10px;
+	top:25px;
 }
 #button-container a{
 	position:absolute;
