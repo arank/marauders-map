@@ -1,5 +1,8 @@
 # The Marauders Map
 
+### ATTENTION: DUE TO THE OVERWHELMING RESPONSE TO THIS EXTENSION AND ITS CORRESPONDING BLOG POST MAPBOX HAS DEACTIVATED THE ### API KEY IN THIS REPO. TO MAKE IT FUNCTIONAL AGAIN YOU MUST GO INTO src/fb/content.js AND CHANGE L.mapbox.accessToken 
+### AND map_id TO BE YOUR OWN (WHICH CAN BE GENERATED AT mapbox.com
+
 ## How do I install this?
 You can get this extension on the Chrome webstore here: https://chrome.google.com/webstore/detail/marauders-map/mliofombcghaamgjkmmmmlepkiacdhkh
 
