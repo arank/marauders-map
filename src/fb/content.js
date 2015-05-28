@@ -3,7 +3,7 @@
 // Global Variables
 
 // Map Variables
-	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJEdDJreGxjIn0.Y3-LSV20SRRZOzs_6nSFjA';
+	L.mapbox.accessToken = 'pk.eyJ1IjoiYXJhbmtoYW5uYSIsImEiOiJjYWYxOTcwYTI4ZTNhNDA5NTdlMzFjMDQ0NWM3OThjMSJ9.j6OVr_W3jAAdxusZ5qLXlg';
 	var map_id = "arankhanna.m3ankjj3";
 	// Map object
 	var map = null;
