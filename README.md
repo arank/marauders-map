@@ -1,17 +1,5 @@
 # The Marauders Map
-AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE *OFFICIAL* VERSION OF THE APP (CAUSING THE MAP TO NOT DISPLAY). TO GET YOUR OWN UNOFFICAL VERSION RUNNING FOLLOW THESE INTRUCTIONS:
-### If you installed the extension from the webstore
-1. Go to mapbox.com, create an account (for free) and create a new map
-2. Get the public API access token of your mapbox account and the map id of the map you just created
-3. Find the code for the installed extension by finding where chrome extensions are installed on your machine (http://stackoverflow.com/questions/14543896/where-does-chrome-store-extensions) and navigating into the folder titled mliofombcghaamgjkmmmmlepkiacdhkh
-4. navigate into src/fb/content.js and make L.mapbox.accessToken equal your public API access token, and map_id equal your map id from above
-5. the extension should now work as normal ;)
-
-### If you are installing the extension from the source code here
-1. Go to mapbox.com, create an account (for free) and create a new map
-2. Get the public API access token of your mapbox account and the map id of the map you just created
-4. navigate into src/fb/content.js and make L.mapbox.accessToken equal your public API access token, and map_id equal your map id from above
-5. the extension should now work as normal ;)
+AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE *OFFICIAL* VERSION OF THE APP (CAUSING THE MAP TO NOT DISPLAY). FURTHERMORE, FACEBOOK HAS DEACTIVATED LOCATION SHARING FROM THE DESKTOP WEBSITE SO THIS CODE WILL NOT WORK. HOWEVER, IT SEEMS LOCATIONS ARE STILL BEING SHARED ON THE MOBILE APP AND SHARING IS STILL ENABLED BY DEFAULT SO THE PRIVACY PROBLEM STILL EXISTS.
 
 ## How do I install this?
 You can get this extension on the Chrome webstore here: https://chrome.google.com/webstore/detail/marauders-map/mliofombcghaamgjkmmmmlepkiacdhkh
