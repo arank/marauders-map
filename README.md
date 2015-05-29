@@ -1,5 +1,5 @@
 # The Marauders Map
-AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE *OFFICIAL* VERSION OF THE APP. TO GET YOUR OWN UNOFFICAL VERSION RUNNING FOLLOW THESE INTRUCTIONS:
+AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE *OFFICIAL* VERSION OF THE APP (CAUSING THE MAP TO NOT DISPLAY). TO GET YOUR OWN UNOFFICAL VERSION RUNNING FOLLOW THESE INTRUCTIONS:
 ### If you installed the extension from the webstore
 1. Go to mapbox.com, create an account (for free) and create a new map
 2. Get the public API access token of your mapbox account and the map id of the map you just created
