@@ -1,7 +1,17 @@
 # The Marauders Map
-ATTENTION: AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE API KEY IN THIS REPO RENDERING THE CODE NON-FUNCTIONAL. TO MAKE IT FUNCTIONAL AGAIN YOU MUST GO INTO src/fb/content.js AND CHANGE L.mapbox.accessToken AND map_id TO BE YOUR OWN WHICH CAN BE GENERATED FOR FREE AFTER MAKING AN ACCOUNT AT mapbox.com
+AT FACEBOOK'S REQUEST I HAVE DEACTIVATED THE *OFFICIAL* VERSION OF THE APP. TO GET YOUR OWN UNOFFICAL VERSION RUNNING FOLLOW THESE INTRUCTIONS:
+### If you installed the extension from the webstore
+1. Go to mapbox.com, create an account (for free) and create a new map
+2. Get the public API access token of your mapbox account and the map id of the map you just created
+3. Find the code for the installed extension by finding where chrome extensions are installed on your machine (http://stackoverflow.com/questions/14543896/where-does-chrome-store-extensions) and navigating into the folder titled mliofombcghaamgjkmmmmlepkiacdhkh
+4. navigate into src/fb/content.js and make L.mapbox.accessToken equal your public API access token, and map_id equal your map id from above
+5. the extension should now work as normal ;)
 
-I HAVE ALSO BEEN TOLD FACEBOOK IS WORKING TO FIX THE ISSUE SO DON'T EXPECT THIS CODE TO BE FUNCTIONAL FOR LONG :)
+### If you are installing the extension from the source code here
+1. Go to mapbox.com, create an account (for free) and create a new map
+2. Get the public API access token of your mapbox account and the map id of the map you just created
+4. navigate into src/fb/content.js and make L.mapbox.accessToken equal your public API access token, and map_id equal your map id from above
+5. the extension should now work as normal ;)
 
 ## How do I install this?
 You can get this extension on the Chrome webstore here: https://chrome.google.com/webstore/detail/marauders-map/mliofombcghaamgjkmmmmlepkiacdhkh
