@@ -10,7 +10,7 @@ For a sligtly more detailed walkthrough look here: https://www.mattcutts.com/blo
 
 ## Where did this come from?
 This chrome extension was written to accompany my Medium post (which can be viewed here https://medium.com/@arankhanna/9da8820bd27d) about the creepy potential of the 
-loaction data we often inadvertantly reveal about ourselves on Facebook messenger, due to its defaults of always sharing your 
+location data we often inadvertantly reveal about ourselves on Facebook messenger, due to its defaults of always sharing your 
 location when sending messages from the increasingly popular mobile app. 
 
 ## What does this do?
